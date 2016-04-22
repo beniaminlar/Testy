@@ -3,6 +3,9 @@ package com.sdl.selenium.utils.browsers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class ChromeConfigReader extends AbstractBrowserConfigReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChromeConfigReader.class);
@@ -50,6 +54,13 @@ public class ChromeConfigReader extends AbstractBrowserConfigReader {
         ChromeOptions options = new ChromeOptions();
         setProfilePreferences(options);
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+
+        if("true".equals(getProperty("desired.capabilities.browserlogs", "false"))) {
+            LoggingPreferences logPrefs = new LoggingPreferences();
+            logPrefs.enable(LogType.BROWSER, Level.ALL);
+            capabilities.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+        }
+
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
         return capabilities;
     }
